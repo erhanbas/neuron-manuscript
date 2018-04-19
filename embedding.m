@@ -2,51 +2,40 @@ clear all
 % crawler
 % run L-measure tool
 % outside of matlab, use java code
-addpath(genpath('./matlab_dbqueries'))
+% % load L-measure result
+% lmeasurepath = '/groups/mousebrainmicro/home/base/CODE/MATLAB/pipeline/manuscript/swcrepo/Lscore';
+% [feats_Lmeasure,neuronnames_Lmeasure,featnames_Lmeasure] = funcs.load_Lmeasure(lmeasurepath);addpath(genpath('./matlab_dbqueries'))
 addpath(genpath('common'))
+
 region = 'whole Brain';
 % rundate = '180319'
-rundate=['180322']
-matfolder='matfiles'
+rundate=['180419']
+matfolder='matfiles';
 mkdir(matfolder)
 
-% crawler(list): returns list of neurons (large file)
-% crawler(list,1): returns reconstruction of the list of neurons (small file)
-% i.e., crawler(list,1) = funcs.neuron2recon(crawler(list))
+% you can also retrieve any neuron with funcs.crawler(neuron_list),
+% e.g. funcs.crawler({'AA0001','AA0002'}). passing empty array will return
+% everything
 if rundate
     load(fullfile(matfolder,sprintf('recons-%s.mat',rundate)))
 else
-    neurons = funcs.crawler(neuron_list);
+    neurons = funcs.crawler([]); % will return all axons in the repo.
+    numneurons = length(neurons);
+    [neuron_list,areaName] = deal([]);
+    for in = 1:numneurons
+        neuron_list{in} = [neurons{in}.name(1:6),'-',neurons{in}.acronym];
+        areaName{in}.safeName = neurons{in}.soma.safeName;
+        areaName{in}.structureIdPath = neurons{in}.soma.structureIdPath;
+    end
+    [allen_neuron_color,structureId] = funcs.areaName2Color(areaName);
+    
+    % envelope
+    sliceRange = [6500,7000]; dimSelection = [1 2];
+    [ env, color, varargout] = funcs.getMask( region, dimSelection, sliceRange );
+    
     rundate = datestr(now,'yymmdd');
     save(fullfile(matfolder,sprintf('recons-%s.mat',datestr(now,'yymmdd'))))
 end
-numneurons = length(neurons);
-
-%%
-[neuron_list,areaName] = deal([]);
-for in = 1:numneurons
-    neuron_list{in} = [neurons{in}.name(1:6),'-',neurons{in}.acronym];
-    areaName{in}.safeName = neurons{in}.soma.safeName;
-    areaName{in}.structureIdPath = neurons{in}.soma.structureIdPath;
-end
-
-%%
-if rundate
-    load(fullfile(matfolder,sprintf('colormodel-%s.mat',rundate)))
-else
-    [allen_neuron_color,structureId] = funcs.areaName2Color(areaName);
-    save(fullfile(matfolder,sprintf('colormodel-%s.mat',datestr(now,'yymmdd'))))
-end
-
-%%
-numneurons = length(neurons);
-% envelope
-sliceRange = [6500,7000]; dimSelection = [1 2];
-[ env, color, varargout] = funcs.getMask( region, dimSelection, sliceRange );
-
-% % load L-measure result
-% lmeasurepath = '/groups/mousebrainmicro/home/base/CODE/MATLAB/pipeline/manuscript/swcrepo/Lscore';
-% [feats_Lmeasure,neuronnames_Lmeasure,featnames_Lmeasure] = funcs.load_Lmeasure(lmeasurepath);
 
 %%
 % pdist measure
