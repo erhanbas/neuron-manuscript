@@ -1,8 +1,12 @@
-function viztsne(Y,names,neurons,env,neuron_color)
+function viz_locations(Y,names,recons,env,neuron_color,querry_pids)
 if nargin<5
     neuron_color=[];
 else
     neuron_color(isnan(neuron_color))=0;
+end
+if querry_pids
+    % update querry_pids with color specs
+    
 end
 f=figure('renderer','painters','Color','k');
 sp1 = subplot(1,2,1);
@@ -16,9 +20,9 @@ ax.YAxis.Color = [1 1 1];
 
 legend('off')
 %apply mouse motion function
-set(f,'windowbuttonmotionfcn',{@mousemove,L,neurons,env});
+set(f,'windowbuttonmotionfcn',{@mousemove,L,recons,env});
 
-function mousemove(src,ev,L,neurons,env)
+function mousemove(src,ev,L,recons,env)
 
 %since this is a figure callback, the first input is the figure handle:
 f=src;
@@ -42,8 +46,8 @@ if lia %if over the plot...
     plot(env(:,1),env(:,2),'r-')
     hold on
     ineuron = locb;
-    gplot3(neurons{ineuron}.recon.A,neurons{ineuron}.recon.subs);
-    plot3(neurons{ineuron}.recon.subs(1,1),neurons{ineuron}.recon.subs(1,2),neurons{ineuron}.recon.subs(1,3),'ro','MarkerFaceColor','g')
+    gplot3(recons{ineuron}.recon.A,recons{ineuron}.recon.subs);
+    plot3(recons{ineuron}.recon.subs(1,1),recons{ineuron}.recon.subs(1,2),recons{ineuron}.recon.subs(1,3),'ro','MarkerFaceColor','g')
     set(gca,'Ydir','Reverse')
     min_env = min(env);
     max_env = max(env);

@@ -61,6 +61,55 @@ set(gcf,'Name','dist-spear-tsne')
 [Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman','Standardize',1,'Perplexity',5);
 funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,allen_neuron_color)
 set(gcf,'Name','dist-spear-tsne')
+%%
+% selection based plot
+location_color_map = containers.Map;
+location_color_map('PRE') = [1 0 0];
+location_color_map('MOs2/3') = [0 1 0];
+updated_color = zeros(numneurons,3)+.5; % make background gray
+keys = location_color_map.keys;
+for ii=1:length(location_color_map)
+    % find neurons having name tag
+    theseneurons = contains(neuron_list,keys{ii});
+    updated_color(theseneurons,:) = ones(sum(theseneurons),1)*location_color_map(keys{ii});
+end
+
+close all
+[Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman');
+funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,updated_color)
+set(gcf,'Name','dist-spear-tsne')
+[Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman','Standardize',1);
+funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,updated_color)
+set(gcf,'Name','dist-spear-tsne')
+[Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman','Perplexity',5);
+funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,updated_color)
+set(gcf,'Name','dist-spear-tsne')
+[Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman','Standardize',1,'Perplexity',5);
+funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,updated_color)
+set(gcf,'Name','dist-spear-tsne')
+%%
+close all
+min_env = min(env);
+max_env = max(env);
+for ii=1:length(location_color_map)
+    theseneurons = contains(neuron_list,keys{ii});
+    figure(100+ii)
+    cla
+    plot(env(:,1),env(:,2),'k-')
+    hold on
+
+    for ineuron = find(theseneurons)
+        gplot3(neurons{ineuron}.recon.A,neurons{ineuron}.recon.subs);
+        hold on
+    end
+    view([0 90])
+    axis equal 
+    xlim([min_env(1)-10 max_env(1)+10])
+    ylim([min_env(2)-10 max_env(2)+10])
+    axis off
+    
+end
+
 
 %% BELOW is for debugging/experimental
 if 0
