@@ -61,6 +61,7 @@ set(gcf,'Name','dist-spear-tsne')
 [Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman','Standardize',1,'Perplexity',5);
 funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,allen_neuron_color)
 set(gcf,'Name','dist-spear-tsne')
+
 %%
 % selection based plot
 location_color_map = containers.Map;
@@ -87,6 +88,7 @@ set(gcf,'Name','dist-spear-tsne')
 [Y_dist_tsne,loss_Y_dist_tsne] = tsne(feats_Dists,'Algorithm','exact','Distance','spearman','Standardize',1,'Perplexity',5);
 funcs.viztsne(Y_dist_tsne,neuron_list,neurons,env,updated_color)
 set(gcf,'Name','dist-spear-tsne')
+
 %%
 close all
 min_env = min(env);
