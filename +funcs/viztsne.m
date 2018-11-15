@@ -48,7 +48,7 @@ if lia %if over the plot...
     min_env = min(env);
     max_env = max(env);
    
-    view([0 90])
+%     view([0 90])
     axis equal off
     xlim([min_env(1)-10 max_env(1)+10])
     ylim([min_env(2)-10 max_env(2)+10])
